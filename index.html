@@ -17,7 +17,7 @@
 :root{
   --ink:#16143A; --ink-2:#201D4E; --ink-3:#2C2865; --ink-4:#3A3580;
   --paper:#F4F1FF; --muted:#A9A4D6; --dim:#7C77AE; --line:rgba(244,241,255,.13);
-  --pink:#FF4F9A; --yellow:#FFD23F; --mint:#3DDBB0; --sky:#7AA7FF; --danger:#FF6B5E;
+  --pink:#FF4F9A; --orange:#FF8A3D; --yellow:#FFD23F; --mint:#3DDBB0; --sky:#7AA7FF; --danger:#FF6B5E;
   --sheet:#FFFDF8; --sheet-ink:#1B1A2E;
   --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
   --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -251,6 +251,33 @@ details.card[open] summary::after{content:"–"}
 details.card summary::-webkit-details-marker{display:none}
 details.card[open] summary{margin-bottom:12px}
 
+/* ---------- meme ---------- */
+.pubbtn{background:var(--sky);color:var(--ink);border-color:transparent;box-shadow:0 4px 0 #3F68B8;flex-direction:column;gap:0;line-height:1.2}
+.pubbtn small{font-weight:600;font-size:13px;opacity:.8}
+.meme{margin:0;background:#fff;color:#111;border-radius:var(--r);overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.meme figcaption{padding:14px 16px 12px;font-family:var(--f-body);font-weight:600;font-size:clamp(17px,4.8vw,21px);line-height:1.28;overflow-wrap:anywhere;white-space:pre-wrap}
+.meme figcaption.ph{color:#9A97A8;font-weight:500}
+.meme .pic{display:block;width:100%;height:auto;max-height:58vh;object-fit:contain;background:#0E0D20}
+.meme .nopic{display:grid;place-items:center;aspect-ratio:4/3;background:#0E0D20;color:var(--muted);font-size:14px;padding:16px;text-align:center}
+.votes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vote{min-height:64px;border-radius:var(--r);font-weight:800;font-size:16px;color:var(--ink);border:3px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.vote.bad{background:var(--danger)} .vote.mid{background:var(--sky)} .vote.good{background:var(--mint)}
+.vote[aria-pressed="true"]{border-color:var(--paper);box-shadow:0 0 0 3px var(--ink) inset}
+.votes.locked .vote[aria-pressed="false"]{opacity:.35}
+.vote .n{font-family:var(--f-display);font-size:22px}
+.mrow{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.mrow:last-child{border-bottom:0}
+.mrow img{width:64px;height:64px;object-fit:cover;border-radius:10px;flex:none;background:#0E0D20}
+.mrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mrow .tx b{font-weight:600;overflow-wrap:anywhere}
+.mrow .tx span{font-size:13px;color:var(--muted)}
+.tally{display:flex;gap:6px;flex:none;font-size:13px;font-weight:700}
+.tally i{font-style:normal;padding:3px 8px;border-radius:999px;color:var(--ink)}
+.fcard{background:var(--sheet);color:var(--sheet-ink);border-radius:var(--r);padding:20px 20px 22px;font-size:clamp(18px,5vw,22px);line-height:1.42;box-shadow:0 10px 30px rgba(0,0,0,.3);overflow-wrap:anywhere}
+.fcard .pre{color:#47445C;font-weight:500}
+.fcard .cap{font-weight:800;color:#D9481B}
+.fcard .cap.ph{color:#A8A4BC;font-weight:500}
+.mrow .tx .pre{color:var(--muted);font-weight:500}
 /* ---------- toast ---------- */
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%) translateY(20px);background:var(--paper);color:var(--ink);padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:calc(100% - 32px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -321,6 +348,10 @@ const GAMES = {
     rules:['Каждый придумывает фразу.','Фраза уходит соседу — он её рисует.','Рисунок уходит следующему — он пишет, что видит. И так по кругу.','В конце смотрим все цепочки и смеёмся.']},
   croc:{name:'Крокодил', short:'Покажи слово рисунком, жестами или словами — остальные угадывают.', color:'var(--mint)', min:2, players:'от 2 игроков',
     rules:['Игроки ходят по очереди: показывающий выбирает одно из трёх слов.','Рисуем: остальные видят рисунок у себя и пишут догадки, игра проверяет сама.','Жестами или словами: угадывают вслух (рядом или по видеосвязи), показывающий отмечает, кто угадал.','Угадавший получает 2 очка, показывающий — 1.']},
+  meme:{name:'Создай мем', short:'Каждому — своя мемная картинка. Придумай подпись смешнее всех.', color:'var(--sky)', min:3, players:'от 3 игроков',
+    rules:['Каждый раунд всем выдаются разные свежие мемные картинки без текста.','Придумай к своей картинке подпись. Картинку можно один раз поменять.','Потом мемы показываются по одному, без имени автора. Остальные ставят оценку: плохо, нормально или хорошо.','Через 6 раундов побеждает тот, у кого больше всего оценок «хорошо».']},
+  finish:{name:'Закончи предложение', short:'Каждому своё начало истории. Допиши его так, чтобы все легли.', color:'var(--orange)', min:3, players:'от 3 игроков',
+    rules:['Каждый раунд всем выдаются разные незаконченные предложения — с именами игроков из комнаты.','Допиши своё как можно смешнее. Текст можно один раз поменять.','Потом варианты показываются по одному, без имени автора. Остальные ставят оценку: плохо, нормально или хорошо.','В конце побеждает тот, у кого больше всего оценок «хорошо».']},
   spy:{name:'Шпион', short:'Все знают, где вы находитесь. Кроме шпиона.', color:'var(--yellow)', min:3, players:'от 3 игроков',
     rules:['Всем, кроме шпиона, показывается одна и та же карточка: локация или герой Dota 2 — смотря какой набор выбран.','По очереди задавайте друг другу вопросы о карточке — не слишком прямые, чтобы шпион не догадался.','Шпион старается понять, что на карточке, и не выдать себя. Он может в любой момент попробовать её назвать.','Если заподозрили кого-то — начинайте голосование. Поймали шпиона — победа мирных.']}
 };
@@ -336,12 +367,118 @@ const SETTINGS = {
     {key:'rounds', label:'Кругов', opts:[[1,'1'],[2,'2'],[3,'3']]},
     {key:'level', label:'Слова', opts:[['mix','Вперемешку'],['easy','Лёгкие'],['medium','Средние'],['hard','Сложные']]}
   ],
+  meme:[
+    {key:'rounds', label:'Раундов', opts:[[3,'3'],[6,'6'],[10,'10']]},
+    {key:'time', label:'Время на подпись', opts:[[45,'45 с'],[75,'75 с'],[120,'2 мин']]}
+  ],
+  finish:[
+    {key:'rounds', label:'Раундов', opts:[[3,'3'],[6,'6'],[10,'10']]},
+    {key:'time', label:'Время на ответ', opts:[[45,'45 с'],[75,'75 с'],[120,'2 мин']]},
+    {key:'names', label:'Имена в текстах', opts:[['players','Игроков комнаты'],['random','Случайные']]}
+  ],
   spy:[
     {key:'pack', label:'Карточки', opts:[['places','Локации'],['dota','Герои Dota 2']]},
     {key:'time', label:'Время раунда', opts:[[300,'5 мин'],[480,'8 мин'],[600,'10 мин']]},
     {key:'spies', label:'Шпионов', opts:[[1,'1'],[2,'2']], note:'Второй шпион появится, если игроков 6 и больше.'}
   ]
 };
+const FINISH = [
+'{A} идёт в лес за грибами, теряет дорогу, но вдруг достаёт из кармана спички и…',
+'{A} просыпается утром и с ужасом понимает, что вчера на вечеринке…',
+'На первом свидании {A} очень хочет произвести впечатление и поэтому…',
+'{A} и {B} решили открыть свой бизнес. Первым делом они…',
+'{A} заходит в лифт, а там стоит {B} в костюме курицы и шёпотом говорит:…',
+'Самый странный подарок, который {A} получает на день рождения, — это…',
+'{A} звонит в службу поддержки банка и вежливо просит…',
+'Инспектор ДПС останавливает машину, за рулём {A}. Инспектор заглядывает в багажник и видит…',
+'{A} впервые летит на самолёте и посреди полёта встаёт и громко объявляет:…',
+'Каждый раз, когда никто не видит, {A} тайком…',
+'{A} находит волшебную лампу, трёт её, появляется джинн, и {A} загадывает…',
+'{A} и {B} застряли на необитаемом острове. Из всех вещей у них есть только…',
+'Мама заходит в комнату без стука и видит, как {A}…',
+'На собеседовании задают вопрос про главный недостаток, и {A} честно отвечает:…',
+'В три часа ночи {A} отправляет в общий чат сообщение:…',
+'Если {A} однажды станет президентом, первым указом будет…',
+'{A} заказывает на маркетплейсе кроссовки за 300 рублей, а в посылке приходит…',
+'{A} приходит к гадалке, та смотрит в хрустальный шар, бледнеет и говорит:…',
+'{A} решает впервые в жизни приготовить ужин. Через полчаса на кухне…',
+'Инопланетяне прилетают на Землю, и первый, кого они встречают, — {A}. Всё заканчивается тем, что…',
+'{A} приходит в спортзал впервые за пять лет, подходит к штанге и…',
+'На свадьбе тамада передаёт микрофон, и {A} произносит тост:…',
+'{A} случайно отправляет начальнику голосовое, в котором…',
+'{A} и {B} едут в отпуск на машине. На полпути навигатор вдруг говорит:…',
+'Секретный талант, о котором никто не знает: {A} умеет…',
+'В музее {A} случайно задевает картину, воет сигнализация, и чтобы спастись, {A}…',
+'{A} записывается на курс «Как стать миллионером за неделю». Первое задание —…',
+'Утром кот вдруг начинает говорить человеческим голосом, и первое, что он сообщает:…',
+'{A} пытается незаметно уйти с вечеринки по-английски, но…',
+'Начальник объявляет, что лучший сотрудник месяца — {A}, потому что…',
+'{A} впервые приходит на йогу. На третьей минуте занятия…',
+'На экзамене {A} не знает ни одного ответа, поэтому в бланке пишет:…',
+'{A} и {B} потерялись в ИКЕА. Через три дня их находят в отделе…',
+'{A} попадает на машине времени на 200 лет назад и первым делом…',
+'На зимней рыбалке {A} вытаскивает из лунки не рыбу, а…',
+'{A} садится в такси, водитель медленно оборачивается, и это…',
+'Ночью {A} открывает холодильник и обнаруживает там…',
+'Бабушка звонит по видеосвязи, и {A} случайно показывает ей…',
+'{A} пишет роман. Первая фраза книги звучит так:…',
+'Сосед стучит в дверь в два часа ночи, {A} открывает, а сосед говорит:…',
+'{A} выигрывает в лотерею миллиард и первым делом покупает…',
+'{A} подходит к кассиру в банке, наклоняется и шёпотом говорит:…',
+'{A} и {B} участвуют в «Битве экстрасенсов». В финальном испытании они…',
+'{A} забывает почистить историю браузера, и все видят последний запрос:…',
+'{A} начинает новую жизнь с понедельника, но уже в понедельник в 9:05…',
+'На родительском собрании учительница встаёт и говорит: «Ваш ребёнок…',
+'{A} приходит на собеседование в NASA и на вопрос «Почему мы должны взять вас?» отвечает:…',
+'{A} запускает прямой эфир, думая, что камера выключена, и все зрители видят, как…',
+'Утро. {A} смотрит в зеркало и понимает, что за ночь…',
+'{A} и {B} решили наконец помириться и для этого…',
+'{A} объясняет бабушке, что такое криптовалюта, и в итоге…',
+'Из леса прямо навстречу выходит медведь, но {A} не теряется и…',
+'{A} едет в метро, и вдруг весь вагон одновременно начинает…',
+'В новогоднюю ночь {A} находит под ёлкой подарок от Деда Мороза, а внутри…',
+'{A} записывается в церковный хор, но на первой же репетиции…',
+'{A} по ошибке надевает чужую куртку и в кармане находит…',
+'{A} заказывает пиццу, звонок в дверь, на пороге курьер, и это…',
+'Учёные наконец выяснили, почему {A} всегда опаздывает:…',
+'{A} просыпается знаменитым на всю страну, потому что ночью…',
+'{A} и {B} снимают фильм ужасов. Самая страшная сцена —…',
+'{A} затевает генеральную уборку и под диваном находит…',
+'На корпоративе {A} выходит на сцену, берёт микрофон и…',
+'{A} записывает голосовое на 15 минут, и всё оно о том, как…',
+'{A} пытается сделать эффектное селфи на краю крыши, но вместо этого…',
+'Врач долго смотрит на анализы и говорит: «У вас редкое заболевание —…',
+'{A} покупает на рынке живого петуха, чтобы…',
+'{A} садится на строгую диету, и уже через час…',
+'Начинается зомби-апокалипсис, а {A} вооружается…',
+'{A} решает сам починить кран, и через десять минут…',
+'{A} и {B} поспорили на желание. Проигравший теперь должен…',
+'Когда {A} сильно нервничает, то всегда…',
+'{A} теряет телефон и находит его в самом неожиданном месте —…',
+'Ночью на кухне раздаётся шорох. {A} берёт сковородку, крадётся туда и видит…',
+'{A} поступает в Хогвартс, Распределяющая шляпа думает целую минуту и кричит:…',
+'Каждое утро {A} начинает с того, что…',
+'{A} становится блогером. Самое популярное видео канала называется:…',
+'{A} дарит имениннику открытку, а в ней написано:…',
+'Погоня, вертолёт, сирены. {A} забегает в супермаркет и прячется в…',
+'{A} ночует в доме с привидениями. В полночь призрак выходит из стены и…',
+'{A} и {B} записывают совместный трек. Припев звучит так:…',
+'{A} открывает свой ресторан. Фирменное блюдо в меню называется…',
+'{A} заходит в чат подъезда и пишет: «Соседи, кто взял мой…',
+'Экскурсовод в Эрмитаже останавливается и говорит: «Эту картину подарил музею человек по имени {A}, и изображено на ней…',
+'{A} пытается пройти таможню, сотрудник открывает чемодан, а там…'
+];
+const FINISH_NAMES = ['Костя','бабушка Зина','сосед Валера','тётя Люба','дядя Гена','кот Барсик','Стас из пятого подъезда','Лена из бухгалтерии','Олег','физрук Петрович','Марина','участковый Сергеич'];
+const CAPT = {
+  meme:{ph:'Смешная подпись к картинке', empty:'Здесь будет подпись', reroll:'Другая картинка', hint:'Подпись появится над картинкой — как в современных мемах. Автора никто не узнает, пока не выставят оценки.', toast:'Напишите подпись', sent:'Подпись отправлена', none:'Без подписи', waitNext:'Вы получите картинку в следующем раунде, а пока сможете оценивать чужие мемы.', item:'Мем', mine:'Это ваш мем', noneRound:'В этом раунде никто не придумал подпись.', best:'Лучший мем игры'},
+  finish:{ph:'Закончи предложение как можно смешнее', empty:'…твоё окончание', reroll:'Другой текст', hint:'Автора никто не узнает, пока не выставят оценки.', toast:'Допишите предложение', sent:'Окончание отправлено', none:'ничего не дописал(а)', waitNext:'Вы получите свой текст в следующем раунде, а пока сможете оценивать чужие варианты.', item:'Вариант', mine:'Это ваш вариант', noneRound:'В этом раунде никто ничего не дописал.', best:'Лучшее окончание игры'}
+};
+const MEME_URL_RE = /^https:\/\/i\.imgflip\.com\/[A-Za-z0-9]+\.(jpg|jpeg|png)$/;
+const MEME_API = 'https://api.imgflip.com/get_memes';
+const PUBLIC_CODE = 'OPEN';   /* letter O is never used in private codes */
+const DEFAULT_SETTINGS = () => ({ maxPlayers:10, game:'telephone',
+  telephone:{len:0, textTime:45, drawTime:90}, croc:{mode:'draw', time:80, rounds:1, level:'mix'},
+  meme:{rounds:6, time:75}, finish:{rounds:6, time:75, names:'players'}, spy:{pack:'places', time:480, spies:1} });
 const AV_COLORS = ['#FF4F9A','#FFD23F','#3DDBB0','#7AA7FF','#FF8A3D','#B98CFF','#4FE3F0','#F25C54','#9BE15D','#FFB3D9'];
 const INK_COLORS = ['#1B1A2E','#8A8799','#F2433A','#FF9A1F','#FFD60A','#2DBE6C','#2F7CF6','#8B5CF6','#8B5A2B','#FF6FB5'];
 const SHEET = '#FFFDF8';
@@ -580,19 +717,27 @@ const Host = {
     const code = makeCode(), pid = uid();
     const S = { code, hostPid:pid, phase:'lobby', g:null, spyRecent:[],
       players:[{pid, name:me.name, color:me.color, connected:true, score:0, lastSeen:Date.now()}],
-      settings:{ maxPlayers:10, game:'telephone',
-        telephone:{len:0, textTime:45, drawTime:90}, croc:{mode:'draw', time:80, rounds:1, level:'mix'}, spy:{pack:'places', time:480, spies:1} } };
+      settings:DEFAULT_SETTINGS() };
+    this.start(S, true);
+  },
+  /* open room: whoever is there first hosts it; the job moves on when they leave */
+  createPublic(me, pid, carry){
+    const players=[{pid, name:me.name, color:me.color, connected:true, score:0, mid:0, lastSeen:Date.now()}];
+    (carry||[]).forEach(p=>{ if(p.pid!==pid && players.length<16) players.push({pid:p.pid, name:cleanName(p.name), color:cleanColor(p.color), connected:false, score:0, mid:0, lastSeen:Date.now()}); });
+    const st=DEFAULT_SETTINGS(); st.game='meme'; st.maxPlayers=16;
+    const S = { code:PUBLIC_CODE, public:true, hostPid:pid, phase:'lobby', g:null, spyRecent:[], players, settings:st, autoAt:null };
     this.start(S, true);
   },
   resume(S){
-    S.settings.spy = Object.assign({pack:'places'}, S.settings.spy);
+    const D=DEFAULT_SETTINGS(); for(const k of ['telephone','croc','meme','finish','spy']) S.settings[k]=Object.assign(D[k], S.settings[k]);
     S.players.forEach(p=>{ if(p.pid!==S.hostPid) p.connected=false; p.lastSeen=Date.now(); });
     this.start(S, false);
   },
   start(S, fresh){
     this.S = S; App.role='host'; App.pid=S.hostPid; App.code=S.code;
     if(location.hash.slice(1)!==S.code) history.replaceState(null,'','#'+S.code);
-    ss('balagan-host-tab', S.code); store.set('balagan-host-alive', {code:S.code, tab:TAB, t:Date.now()});
+    if(!S.public){ ss('balagan-host-tab', S.code); store.set('balagan-host-alive', {code:S.code, tab:TAB, t:Date.now()}); }
+    this.hid=uid(); this.since=Date.now(); this.lastAnn=0;
     this.open();
     clearInterval(this.tickT); this.tickT=setInterval(()=>this.tick(), 500);
     this.changed();
@@ -602,8 +747,8 @@ const Host = {
     (this.links||[]).forEach(l=>{ try{ l.close(); }catch(e){} });
     this.vconns = new Map();
     this.links = BROKERS.map((url,bi)=>{
-      const L = makeLink(url, {clientId:'bh'+uid(), onState:()=>this.netState(), onMessage:(t,msg)=>this.onNet(bi,msg)});
-      L.subscribe(base+'/h'); L.connect(); return L;
+      const L = makeLink(url, {clientId:'bh'+uid(), onState:()=>this.netState(), onMessage:(t,msg)=> t.endsWith('/a') ? this.onAnnounce(msg) : this.onNet(bi,msg)});
+      L.subscribe(base+'/h'); if(this.S.public) L.subscribe(base+'/a'); L.connect(); return L;
     });
     setTimeout(()=>this.netState(), 9000);
   },
@@ -619,12 +764,24 @@ const Host = {
     }
     c.bi = bi; c._emit('data', msg.d);
   },
-  close(){
-    for(const [pid] of this.conns) this.send(pid, {t:'reject', reason:'closed'});
+  close(note){
+    const pub = this.S && this.S.public;
+    for(const [pid] of this.conns) this.send(pid, pub ? {t: note||'hostleft'} : {t:'reject', reason:'closed'});
     clearInterval(this.tickT);
     const links=this.links; this.links=[];
     setTimeout(()=>{ (links||[]).forEach(l=>{ try{ l.close(); }catch(e){} }); }, 600);
-    store.del('balagan-host'); store.del('balagan-host-alive'); ss('balagan-host-tab', null); this.S=null; this.conns.clear();
+    if(!pub){ store.del('balagan-host'); store.del('balagan-host-alive'); ss('balagan-host-tab', null); }
+    this.S=null; this.conns.clear();
+  },
+  onAnnounce(m){
+    if(!this.S || !this.S.public || !m || m.hid===this.hid || typeof m.since!=='number') return;
+    if(m.since < this.since || (m.since===this.since && String(m.hid) < this.hid)) this.yieldRoom();
+  },
+  /* two people opened the open room at once: the younger host steps down and joins the older one */
+  yieldRoom(){
+    const me=App.me, pid=App.pid;
+    this.close('rehost'); App.role=null;
+    Client.join(PUBLIC_CODE, pid);
   },
   player(pid){ return this.S.players.find(p=>p.pid===pid); },
   onConn(conn){
@@ -684,7 +841,7 @@ const Host = {
     setTimeout(()=>{ this.pending=false; if(!this.S) return; this.broadcast(); this.persist(); }, 0);
   },
   persist(){
-    if(this.saveT) return;
+    if(this.saveT || this.S.public) return;
     this.saveT = setTimeout(()=>{ this.saveT=null; if(this.S) store.set('balagan-host', {S:this.S, t:Date.now()}); }, 800);
   },
   broadcast(){
@@ -702,7 +859,8 @@ const Host = {
   viewFor(pid){
     const S=this.S, g=S.g;
     const v = { now:Date.now(), code:S.code, me:pid, hostPid:S.hostPid, isHost:pid===S.hostPid, phase:S.phase, settings:S.settings,
-      players:S.players.map(p=>({pid:p.pid, name:p.name, color:p.color, on:p.connected, score:p.score, inGame: g ? g.order.includes(p.pid) : false})), g:null };
+      players:S.players.map(p=>({pid:p.pid, name:p.name, color:p.color, on:p.connected, score:p.score, mid:p.mid||0, inGame: g ? g.order.includes(p.pid) : false})), g:null,
+      public:!!S.public, autoAt:S.autoAt||null };
     if(g) v.g = IMPL[g.type].view(this, pid);
     return v;
   },
@@ -714,7 +872,17 @@ const Host = {
       if(p.pid===this.S.hostPid) continue;
       if(p.connected && now-p.lastSeen>12000){ p.connected=false; this.changed(); }
     }
-    if(this.S.g) IMPL[this.S.g.type].tick(this, now);
+    if(this.S.public) this.publicTick(now);
+    if(this.S && this.S.g) IMPL[this.S.g.type].tick(this, now);
+  },
+  publicTick(now){
+    const S=this.S;
+    if(now-this.lastAnn>3000){ this.lastAnn=now; this.links.forEach(l=>{ if(l.ok) l.send(NS+S.code+'/a', {hid:this.hid, since:this.since}); }); }
+    const live=S.players.filter(p=>p.connected).length;
+    if(S.phase==='lobby'){
+      if(live>=GAMES.meme.min){ if(!S.autoAt){ S.autoAt=now+15000; this.changed(); } else if(now>S.autoAt){ S.autoAt=null; S.players=S.players.filter(p=>!p.left); this.startGame(); this.changed(); } }
+      else if(S.autoAt){ S.autoAt=null; this.changed(); }
+    } else if(live<2){ S.phase='lobby'; S.g=null; S.autoAt=null; this.changed(); }
   },
   removePlayer(pid, kicked){
     const S=this.S; const i=S.players.findIndex(p=>p.pid===pid); if(i<0 || pid===S.hostPid) return;
@@ -734,9 +902,10 @@ const Host = {
   },
   act(pid, m){
     const S=this.S; if(!S) return;
-    const isHost = pid===S.hostPid;
+    const isHost = pid===S.hostPid && !S.public;
     if(m.a==='resync'){ delete this.sentTask[pid]; this.resyncExtras(pid); this.changed(); return; }
     if(m.a==='leave'){ this.removePlayer(pid, false); return; }
+    if(S.public && S.players.length>16) return;
     if(S.phase==='lobby'){
       if(!isHost) return;
       if(m.a==='game' && GAMES[m.game]) S.settings.game=m.game;
@@ -975,17 +1144,142 @@ const Spy = {
     return v;
   }
 };
-const IMPL = {telephone:Tel, croc:Croc, spy:Spy};
+/* ---------- Создай мем ---------- */
+const Meme = {
+  start(H){
+    const S=H.S; S.players.forEach(p=>{ p.score=0; p.mid=0; });
+    S.g = {type:'meme', id:uid(), round:0, rounds:S.settings.meme.rounds, stage:'loading', order:[], deadline:null,
+      pics:{}, caps:{}, done:{}, rerolled:{}, used:[], queue:[], qi:0, votes:{}, results:[]};
+    const id=S.g.id;
+    this.loadPool(H).then(ok=>{
+      const g=H.S && H.S.g; if(!g || g.id!==id || g.stage!=='loading') return;
+      if(ok) this.beginRound(H); else g.stage='error';
+      H.changed();
+    });
+  },
+  loadPool(H){
+    if(H.memePool && H.memePool.length) return Promise.resolve(true);
+    return fetch(MEME_API).then(r=>r.json()).then(j=>{
+      const list=((j && j.data && j.data.memes) || []).filter(m=>MEME_URL_RE.test(m.url)).map(m=>({u:m.url, w:m.width|0, h:m.height|0}));
+      H.memePool=list; return list.length>0;
+    }).catch(()=>false);
+  },
+  pickPic(H,g){ let pool=H.memePool.filter(m=>!g.used.includes(m.u)); if(!pool.length){ g.used=[]; pool=H.memePool.slice(); } const m=pick(pool); g.used.push(m.u); return m; },
+  live(H){ return H.S.players.filter(p=>p.connected && !p.left).map(p=>p.pid); },
+  beginRound(H){
+    const g=H.S.g;
+    g.round++; g.order=this.live(H); g.pics={}; g.caps={}; g.done={}; g.rerolled={}; g.queue=[]; g.qi=0; g.votes={};
+    g.order.forEach(p=>{ g.pics[p]=this.pickPic(H,g,p); });
+    g.stage='write'; g.deadline=Date.now()+H.S.settings[g.type].time*1000;
+  },
+  checkWrite(H){
+    const g=H.S.g; if(g.stage!=='write') return false;
+    const need=g.order.filter(p=>H.player(p)?.connected);
+    if(g.order.some(p=>g.done[p]) && need.every(p=>g.done[p])){ this.endWrite(H); return true; }
+    return false;
+  },
+  endWrite(H){ const g=H.S.g; g.queue=shuffle(g.order.filter(p=>g.caps[p])); g.qi=0; if(g.queue.length) this.beginVote(H); else this.board(H); },
+  beginVote(H){ const g=H.S.g; g.stage='vote'; g.votes={}; g.deadline=Date.now()+20000; },
+  voters(H){ const g=H.S.g, a=g.queue[g.qi]; return H.S.players.filter(p=>p.connected && !p.left && p.pid!==a).map(p=>p.pid); },
+  checkVotes(H){ const g=H.S.g; if(g.stage!=='vote') return false; const vs=this.voters(H); if(!vs.length || vs.every(p=>g.votes[p]!=null)){ this.reveal(H); return true; } return false; },
+  reveal(H){
+    const g=H.S.g, a=g.queue[g.qi], c=[0,0,0];
+    Object.values(g.votes).forEach(x=>{ c[x]++; });
+    const p=H.player(a); if(p){ p.score+=c[2]; p.mid=(p.mid||0)+c[1]; }
+    g.results.push(Object.assign({round:g.round, pid:a, text:g.caps[a], c}, g.pics[a]));
+    if(g.results.length>80) g.results.shift();
+    g.stage='reveal'; g.deadline=Date.now()+6000;
+  },
+  nextMeme(H){ const g=H.S.g; g.qi++; if(g.qi<g.queue.length) this.beginVote(H); else this.board(H); },
+  board(H){ const g=H.S.g; g.stage='board'; g.deadline=Date.now()+12000; },
+  nextRound(H){ const g=H.S.g; if(g.round>=g.rounds){ g.stage='final'; g.deadline = H.S.public ? Date.now()+30000 : null; } else this.beginRound(H); },
+  act(H,pid,m){
+    const g=H.S.g, isHost=pid===H.S.hostPid && !H.S.public;
+    switch(m.a){
+      case 'meme-cap': {
+        if(g.stage!=='write' || !g.order.includes(pid) || g.done[pid]) return;
+        const t=cleanText(m.text,140); if(!t && !m.auto) return;
+        g.done[pid]=true; if(t) g.caps[pid]=t;
+        this.checkWrite(H); break;
+      }
+      case 'meme-reroll': if(g.stage!=='write' || !g.order.includes(pid) || g.rerolled[pid] || g.done[pid]) return; g.rerolled[pid]=true; g.pics[pid]=this.pickPic(H,g,pid); break;
+      case 'meme-vote': {
+        if(g.stage!=='vote') return; const v=m.v|0; if(v<0 || v>2 || !this.voters(H).includes(pid)) return;
+        g.votes[pid]=v; this.checkVotes(H); break;
+      }
+      case 'meme-next':
+        if(!isHost) return;
+        if(g.stage==='write') this.endWrite(H);
+        else if(g.stage==='vote') this.reveal(H);
+        else if(g.stage==='reveal') this.nextMeme(H);
+        else if(g.stage==='board') this.nextRound(H);
+        else if(g.stage==='error'){ this.start(H); return; }
+        else return;
+        break;
+      default: return;
+    }
+    H.changed();
+  },
+  tick(H,now){
+    const g=H.S.g; let ch=false;
+    if(g.stage==='write'){ ch = this.checkWrite(H) || (now>g.deadline+3500 && (this.endWrite(H), true)); }
+    else if(g.stage==='vote'){ ch = this.checkVotes(H) || (now>g.deadline && (this.reveal(H), true)); }
+    else if(g.stage==='reveal' && now>g.deadline){ this.nextMeme(H); ch=true; }
+    else if(g.stage==='board' && now>g.deadline){ this.nextRound(H); ch=true; }
+    else if(g.stage==='final' && H.S.public && now>g.deadline){
+      H.S.players=H.S.players.filter(p=>!p.left);
+      if(this.live(H).length>=GAMES.meme.min) this.start(H); else { H.S.phase='lobby'; H.S.g=null; }
+      ch=true;
+    }
+    if(ch) H.changed();
+  },
+  view(H,pid){
+    const g=H.S.g, inR=g.order.includes(pid);
+    const v = {type:g.type, id:g.id, stage:g.stage, round:g.round, rounds:g.rounds, deadline:g.deadline, inRound:inR};
+    if(g.stage==='write'){
+      v.total=g.order.length; v.pending=g.order.filter(p=>!g.done[p]); v.doneCount=v.total-v.pending.length;
+      if(inR){ v.pic=g.pics[pid]; v.done=!!g.done[pid]; v.myText=g.caps[pid]||''; v.rerolled=!!g.rerolled[pid]; }
+    }
+    if(g.stage==='vote' || g.stage==='reveal'){
+      const a=g.queue[g.qi];
+      v.cur=Object.assign({text:g.caps[a], idx:g.qi+1, of:g.queue.length, mine:a===pid}, g.pics[a]);
+      v.myVote = g.votes[pid] ?? null; v.voted=Object.keys(g.votes).length; v.voters=this.voters(H).length;
+      if(g.stage==='reveal'){ const r=g.results[g.results.length-1]; v.cur.author=a; v.cur.c=r.c; }
+    }
+    const rank=(a,b)=>b.c[2]-a.c[2] || b.c[1]-a.c[1] || a.c[0]-b.c[0];
+    if(g.stage==='board') v.roundMemes=g.results.filter(r=>r.round===g.round).sort(rank);
+    if(g.stage==='final') v.best=g.results.slice().sort(rank)[0] || null;
+    return v;
+  }
+};
+/* ---------- Закончи предложение: the same round/vote engine, text instead of pictures ---------- */
+const Finish = Object.assign({}, Meme, {
+  start(H){
+    const S=H.S; S.players.forEach(p=>{ p.score=0; p.mid=0; });
+    S.g = {type:'finish', id:uid(), round:0, rounds:S.settings.finish.rounds, stage:'write', order:[], deadline:null,
+      pics:{}, caps:{}, done:{}, rerolled:{}, used:[], queue:[], qi:0, votes:{}, results:[]};
+    this.beginRound(H);
+  },
+  pickPic(H,g,pid){
+    let idx=FINISH.map((_,i)=>i).filter(i=>!g.used.includes(i)); if(!idx.length){ g.used=[]; idx=FINISH.map((_,i)=>i); }
+    const i=pick(idx); g.used.push(i);
+    const mine = H.S.settings.finish.names!=='random' ? shuffle(H.S.players.filter(p=>p.pid!==pid && !p.left).map(p=>p.name)) : [];
+    const names=[...new Set(mine.concat(shuffle(FINISH_NAMES)))];
+    const t=FINISH[i].split('{A}').join(names[0]).split('{B}').join(names[1]);
+    return {t: t.charAt(0).toUpperCase()+t.slice(1)};
+  }
+});
+const IMPL = {telephone:Tel, croc:Croc, meme:Meme, finish:Finish, spy:Spy};
 
 /* =====================================================================
    CLIENT — connects to the host
    ===================================================================== */
 const Client = {
   link:null, bi:0, cid:null, code:null, lastMsg:0, tickT:null, everConnected:false, active:false, lastPing:0, lastHello:0, tries:0, linkAt:0,
-  join(code){
-    this.code=code; this.active=true; this.everConnected=false; this.tries=0; this.cid=uid();
+  join(code, keepPid){
+    this.code=code; this.active=true; this.everConnected=false; this.tries=0; this.cid=uid(); this.public = code===PUBLIC_CODE; this.helloAt=0; this.hostLeftAt=0;
     App.role='client'; App.code=code; App.view=null;
-    App.pid = claimPid(code);
+    App.pid = keepPid || claimPid(code); if(keepPid) ss('balagan-pid-'+code, keepPid);
     if(location.hash.slice(1)!==code) history.replaceState(null,'','#'+code);
     showConnecting();
     this.bi = clamp(store.get('balagan-broker',0)|0, 0, BROKERS.length-1);
@@ -1002,11 +1296,12 @@ const Client = {
     L.subscribe(this.base()+'/p/'+this.cid); L.connect();
   },
   raw(d){ return !!(this.link && this.link.ok && this.link.send(this.base()+'/h', {c:this.cid, d})); },
-  hello(){ this.lastHello=Date.now(); this.raw({t:'hello', pid:App.pid, name:App.me.name, color:App.me.color}); },
+  hello(){ this.lastHello=Date.now(); if(!this.helloAt) this.helloAt=this.lastHello; this.raw({t:'hello', pid:App.pid, name:App.me.name, color:App.me.color}); },
   onData(m){
     if(!m || typeof m!=='object' || !this.active) return;
     this.lastMsg=Date.now();
-    if(m.t==='rehello'){ this.hello(); return; }
+    if(m.t==='rehello' || m.t==='rehost'){ this.hello(); return; }
+    if(m.t==='hostleft'){ this.hostLeftAt=Date.now(); this.lastMsg=Date.now()-10000; return; }
     if(!this.everConnected){ this.everConnected=true; store.set('balagan-broker', this.bi); }
     if(!App.netOk) setNet(true);
     onMessage(m);
@@ -1020,6 +1315,7 @@ const Client = {
     if(!this.active || !this.link) return;
     const now=Date.now();
     if(!this.everConnected){
+      if(this.public && this.link.ok && this.helloAt && now-this.helloAt>5000){ this.becomeHost(); return; }
       if(now-this.linkAt > 7000){
         this.tries++;
         if(this.tries >= BROKERS.length+1){ leaveRoom('Комната '+this.code+' не найдена. Проверьте код и что у ведущего открыта игра.'); return; }
@@ -1030,7 +1326,16 @@ const Client = {
     }
     if(this.link.ok && now-this.lastPing>3000){ this.lastPing=now; this.raw({t:'ping'}); }
     if(now-this.lastMsg>11000){ setNet(false); if(this.link.ok && now-this.lastHello>4000) this.hello(); }
+    if(this.public && now-this.lastMsg>9000){
+      const v=App.view, next=v && v.players.filter(p=>p.on && p.pid!==v.hostPid)[0];
+      if((next && next.pid===App.pid) || now-this.lastMsg>20000+(this.jit||(this.jit=Math.random()*4000))){ this.becomeHost(); return; }
+    }
     if(BROKERS.length>1 && now-this.lastMsg>30000 && now-this.linkAt>30000){ this.bi=(this.bi+1)%BROKERS.length; this.openLink(); }
+  },
+  becomeHost(){
+    const carry = App.view ? App.view.players.filter(p=>p.pid!==App.view.hostPid) : [];
+    const pid=App.pid; this.stop(); App.role=null;
+    Host.createPublic(App.me, pid, carry);
   },
   wake(){
     if(!this.active) return;
@@ -1078,7 +1383,14 @@ function render(){
 }
 function screenFor(v){
   const g=v.g;
-  if(v.phase==='lobby' || !g) return ['lobby', Lobby];
+  if(v.phase==='lobby' || !g) return v.public ? ['publobby', PublicLobby] : ['lobby', Lobby];
+  if(g.type==='meme' || g.type==='finish'){
+    if(g.stage==='loading' || g.stage==='error') return ['meme-'+g.stage+'-'+g.id, MemeStatus];
+    if(g.stage==='write') return ['meme-w-'+g.id+'-'+g.round+'-'+(g.inRound && !g.done ? 't' : 'w'), g.inRound && !g.done ? MemeWrite : MemeWait];
+    if(g.stage==='vote' || g.stage==='reveal') return ['meme-s-'+g.id+'-'+g.round+'-'+g.cur.idx, MemeShow];
+    if(g.stage==='board') return ['meme-b-'+g.id+'-'+g.round, MemeBoard];
+    return ['meme-f-'+g.id, MemeFinal];
+  }
   if(g.type==='telephone'){
     if(g.stage==='play'){
       if(!g.inGame) return ['tel-spec-'+g.id, TelWait];
@@ -1107,12 +1419,13 @@ function renderBar(v){
     bar.addEventListener('click', e=>{
       const b=e.target.closest('[data-act]'); if(!b) return;
       if(b.dataset.act==='copy') copyText(roomLink(App.code));
-      if(b.dataset.act==='exit') armed(b, App.role==='host' ? 'Закрыть комнату для всех?' : 'Точно выйти?', ()=>{ if(App.role==='client'){ act('leave'); setTimeout(()=>leaveRoom(), 300); } else leaveRoom(); });
+
+      if(b.dataset.act==='exit') armed(b, App.role==='host' && !App.view?.public ? 'Закрыть комнату для всех?' : 'Точно выйти?', ()=>{ if(App.role==='client'){ act('leave'); setTimeout(()=>leaveRoom(), 300); } else leaveRoom(); });
     });
     bar._built=true;
   }
-  $('.code', bar).textContent = v.code;
-  $('.cnt', bar).textContent = on+' '+plural(on,'игрок','игрока','игроков')+' онлайн';
+  $('.code', bar).textContent = v.public ? 'Открытая' : v.code;
+  $('.cnt', bar).textContent = on+' онлайн';
   $('.dot', bar).classList.toggle('off', App.netOk===false);
 }
 /* timers */
@@ -1230,10 +1543,11 @@ function showLanding(err){
       <div class="field"><label>Твой цвет</label><div class="swatches-av">${AV_COLORS.map(c=>`<button class="swatch-av" style="--c:${c}" data-color="${c}" aria-label="Цвет" aria-pressed="${c===me.color}"></button>`).join('')}</div></div>
       <p class="err" id="err" ${err?'':'hidden'}>${esc(err||'')}</p>
       ${hashCode.length===4 ? `
-        <button class="btn primary big" data-act="join-hash">Войти в комнату ${esc(hashCode)}</button>
+        <button class="btn primary big" data-act="join-hash">${hashCode===PUBLIC_CODE?'Войти в открытую комнату':'Войти в комнату '+esc(hashCode)}</button>
         <div class="or">или</div>
         <button class="btn ghost wide" data-act="create">Создать свою комнату</button>` : `
         <button class="btn primary big" data-act="create">Создать комнату</button>
+        <button class="btn big pubbtn" data-act="public"><span>Открытая комната</span><small>«Создай мем» со всеми, кто сейчас на сайте</small></button>
         <div class="or">или войти по коду</div>
         <div class="row"><input class="input code-input grow" id="code" maxlength="4" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="КОД" aria-label="Код комнаты"><button class="btn" data-act="join">Войти</button></div>`}
     </div>
@@ -1258,6 +1572,7 @@ function showLanding(err){
     if(!name){ showErr('Введите имя — его увидят остальные игроки.'); $('#nm',node).focus(); return; }
     App.me={name, color}; store.set('balagan-me', App.me);
     if(a==='create') Host.create(App.me);
+    else if(a==='public') Client.join(PUBLIC_CODE);
     else if(a==='join-hash') Client.join(hashCode);
     else if(a==='resume-client') Client.join(clientResume);
     else if(a==='join'){ const c=normCode($('#code',node).value); if(c.length!==4){ showErr('Код комнаты — 4 буквы, например KXQM.'); return; } Client.join(c); }
@@ -1327,6 +1642,136 @@ const Lobby = {
       } else cta.innerHTML = `<div class="waitnote">Ждём, когда ${esc(nameOf(v.hostPid))} начнёт игру</div>`;
     }};
     inst.update(v); return inst;
+  }
+};
+
+/* ---------- Создай мем: screens ---------- */
+function memeCard(m, text, ph){
+  if(m && m.t!=null) return `<div class="fcard"><span class="pre">${esc(m.t)}</span> <span class="cap ${text?'':'ph'}">${text?esc(text):esc(ph||CAPT.finish.empty)}</span></div>`;
+  const ok = m && MEME_URL_RE.test(m.u);
+  return `<figure class="meme"><figcaption class="cap ${text?'':'ph'}">${text?esc(text):esc(ph||'Здесь будет подпись')}</figcaption>${ok?`<img class="pic" src="${esc(m.u)}" ${m.w&&m.h?`width="${m.w|0}" height="${m.h|0}"`:''} alt="Мемная картинка" referrerpolicy="no-referrer">`:`<div class="nopic">Картинка не загрузилась</div>`}</figure>`;
+}
+function memeHead(g, extra=''){ return gameHead(g.type, `<span class="row" style="gap:8px"><span class="tag">Раунд ${g.round} из ${g.rounds}</span>${extra}${timerHtml(g.deadline)}</span>`); }
+function goodWord(n){ return n+' '+plural(n,'«хорошо»','«хорошо»','«хорошо»'); }
+function memeScore(players){
+  const rows=players.slice().sort((a,b)=>b.score-a.score || (b.mid||0)-(a.mid||0));
+  let place=0, last=null;
+  return `<div class="score">${rows.map((p,i)=>{ const key=p.score+':'+(p.mid||0); if(key!==last){ place=i+1; last=key; }
+    return `<div class="srow ${place===1&&p.score>0?'first':''}"><span class="pl">${place}</span>${av(p.pid,'sm')}<span class="nm">${esc(p.name)}${p.pid===App.view.me?' <span class="tag me">вы</span>':''}</span><span class="small muted" style="white-space:nowrap">${p.mid||0} норм.</span><span class="pts" title="Оценок «хорошо»">${p.score}</span></div>`; }).join('')}</div>`;
+}
+const PublicLobby = {
+  mount(v){
+    const node=el(`<section class="stack" style="gap:18px;--gc:var(--sky)">
+      <div class="card stack" style="gap:8px"><span class="gname">Открытая комната</span><h2>Создай мем</h2><p class="muted">Сюда попадает любой, кто нажал «Открытая комната» на сайте. Игра начинается сама, когда соберутся ${GAMES.meme.min} игрока, и идёт без остановки.</p>
+        <div class="row"><button class="btn" data-act="copy">Скопировать ссылку</button></div></div>
+      <div class="card stack"><div class="row"><h3 class="grow">Сейчас здесь</h3><span class="tag" id="cnt"></span></div><div class="plist" id="plist"></div></div>
+      <div class="card stack"><h3>Правила</h3><ol class="rules">${GAMES.meme.rules.map(r=>`<li>${r}</li>`).join('')}</ol></div>
+      <div class="sticky-cta" id="cta"></div></section>`);
+    node.addEventListener('click', e=>{ if(e.target.closest('[data-act=copy]')) copyText(roomLink(PUBLIC_CODE)); });
+    const inst={el:node, update(v){
+      const on=v.players.filter(p=>p.on);
+      $('#cnt',node).textContent=on.length+' онлайн';
+      $('#plist',node).innerHTML=v.players.filter(p=>p.on).map(p=>`<div class="prow">${av(p.pid)}<span class="nm">${esc(p.name)}</span>${p.pid===v.me?'<span class="tag me">вы</span>':''}</div>`).join('');
+      const need=GAMES.meme.min-on.length;
+      $('#cta',node).innerHTML = v.autoAt ? `<div class="waitnote">Игра начнётся через ${timerHtml(v.autoAt)} с</div>`
+        : `<div class="waitnote">Ждём ещё ${need} ${plural(need,'игрока','игроков','игроков')}. Позовите друзей — скопируйте ссылку.</div>`;
+    }};
+    inst.update(v); return inst;
+  }
+};
+const MemeStatus = {
+  mount(v){
+    const err=v.g.stage==='error';
+    const node=el(`<section class="big-wait" style="--gc:var(--sky)">${err?'':'<div class="spinner"></div>'}<h2>${err?'Не получилось загрузить картинки':'Загружаем свежие мемы…'}</h2>
+      ${err?`<p class="muted">Картинки берутся с imgflip.com — похоже, он сейчас недоступен. Проверьте интернет и попробуйте ещё раз.</p>${v.isHost?`<div class="row"><button class="btn ghost" data-act="lobby">В лобби</button><button class="btn primary" data-act="meme-next">Попробовать снова</button></div>`:''}`:''}</section>`);
+    node.addEventListener('click', e=>{ const b=e.target.closest('[data-act]'); if(b) act(b.dataset.act); });
+    return {el:node};
+  }
+};
+const MemeWrite = {
+  mount(v){
+    const g=v.g, K=CAPT[g.type];
+    const node=el(`<section class="stack" style="gap:14px;--gc:${GAMES[g.type].color}">${memeHead(g)}
+      <div id="card"></div>
+      <textarea class="input" id="cap" rows="2" maxlength="140" placeholder="${K.ph}"></textarea>
+      <div class="row"><button class="btn ghost" data-act="reroll" ${g.rerolled?'disabled':''}>${K.reroll}</button><span class="spacer"></span><button class="btn primary" data-act="go">Готово</button></div>
+      <p class="small muted">${K.hint}</p></section>`);
+    const ta=$('#cap',node); let sent=false, sentAt=0, picU=null;
+    const paint=()=>{ const V=App.view.g, key=V.pic && (V.pic.u||V.pic.t); if(V.pic && key!==picU){ picU=key; $('#card',node).innerHTML=memeCard(V.pic, cleanText(ta.value,140), K.empty); } else { const fc=$('#card .cap',node); const t=cleanText(ta.value,140); if(fc){ fc.textContent=t||K.empty; fc.classList.toggle('ph',!t); } } };
+    const submit=auto=>{ if(sent) return; const t=cleanText(ta.value,140); if(!t && !auto){ toast(K.toast); ta.focus(); return; }
+      if(act('meme-cap',{text:t, auto:!!auto})){ sent=true; sentAt=Date.now(); node.style.opacity=.6; node.style.pointerEvents='none'; } };
+    ta.addEventListener('input', paint);
+    ta.addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); submit(false); } });
+    node.addEventListener('click', e=>{ const b=e.target.closest('[data-act]'); if(!b) return; if(b.dataset.act==='go') submit(false); if(b.dataset.act==='reroll'){ act('meme-reroll'); b.disabled=true; } });
+    const inst={el:node, update(v){ paint(); const rb=$('[data-act=reroll]',node); if(v.g.rerolled) rb.disabled=true; if(sent && !v.g.done && Date.now()-sentAt>5000){ sent=false; submit(true); } },
+      onTick(now){ const d=App.view?.g?.deadline; if(!sent && d && App.view.g.stage==='write' && now>=d-400) submit(true); }};
+    inst.update(v); return inst;
+  }
+};
+const MemeWait = {
+  mount(v){
+    const K=CAPT[v.g.type];
+    const node=el(`<section class="stack" style="gap:16px;--gc:${GAMES[v.g.type].color}">${memeHead(v.g)}<div id="w" class="stack" style="gap:14px"></div></section>`);
+    node.addEventListener('click', e=>{ const b=e.target.closest('[data-act=force]'); if(b) armed(b,'Точно не ждать?',()=>act('meme-next')); });
+    const inst={el:node, update(v){
+      const g=v.g;
+      $('#w',node).innerHTML = (g.inRound ? `<h2>${K.sent}</h2>${memeCard(g.pic, g.myText, K.none)}` : `<h2>Раунд уже идёт</h2><p class="muted">${K.waitNext}</p>`)
+        + `<div class="progress"><i style="width:${g.total?g.doneCount/g.total*100:0}%"></i></div><p style="font-weight:700">Готово ${g.doneCount} из ${g.total}</p>`
+        + (g.pending.length?`<div class="avrow">${g.pending.map(pid=>`<span class="tag" style="display:inline-flex;align-items:center;gap:6px">${av(pid,'sm')}${esc(nameOf(pid))}</span>`).join('')}</div>`:'')
+        + (v.isHost && !v.public ? `<button class="btn ghost" data-act="force">Не ждать, к оценкам</button>`:'');
+    }};
+    inst.update(v); return inst;
+  }
+};
+const MemeShow = {
+  mount(v){
+    const g=v.g, c=g.cur, K=CAPT[g.type];
+    const node=el(`<section class="stack" style="gap:14px;--gc:${GAMES[g.type].color}"><div id="hd"></div>
+      ${memeCard(c, c.text)}<div id="act" class="stack" style="gap:10px"></div></section>`);
+    node.addEventListener('click', e=>{ const b=e.target.closest('[data-v]'); if(b && App.view.g.stage==='vote'){ act('meme-vote',{v:+b.dataset.v}); $$('.vote',node).forEach(x=>x.setAttribute('aria-pressed', x===b)); }
+      const n=e.target.closest('[data-act=next]'); if(n) act('meme-next'); });
+    const L=['Плохо','Нормально','Хорошо'], VK=['bad','mid','good'];
+    const inst={el:node, update(v){
+      const g=v.g, c=g.cur, box=$('#act',node);
+      $('#hd',node).innerHTML = memeHead(g, `<span class="tag">${K.item} ${c.idx} из ${c.of}</span>`);
+      if(g.stage==='vote'){
+        if(c.mine) box.innerHTML=`<div class="waitnote">${K.mine} — остальные оценивают. Оценили ${g.voted} из ${g.voters}</div>`;
+        else box.innerHTML=`<div class="votes">${[0,1,2].map(i=>`<button class="vote ${VK[i]}" data-v="${i}" aria-pressed="${g.myVote===i}">${L[i]}</button>`).join('')}</div>
+          <p class="small muted" style="text-align:center">${g.myVote==null?'Оцените — автора покажем после оценок':'Оценка принята, можно поменять'} · оценили ${g.voted} из ${g.voters}</p>`;
+      } else {
+        box.innerHTML=`<div class="row" style="gap:10px">${av(c.author)}<b class="grow">${esc(nameOf(c.author))}</b>${c.author===v.me?'<span class="tag me">вы</span>':''}</div>
+          <div class="votes locked">${[0,1,2].map(i=>`<div class="vote ${VK[i]}" aria-pressed="${g.myVote===i}"><span class="n">${c.c[i]}</span>${L[i]}</div>`).join('')}</div>
+          ${v.isHost && !v.public ? `<button class="btn ghost wide" data-act="next">Дальше</button>`:''}`;
+      }
+    }};
+    inst.update(v); return inst;
+  }
+};
+function memeRow(r){ const ok=MEME_URL_RE.test(r.u); const pre = r.t!=null ? `<span class="pre">…${esc(r.t.length>60 ? r.t.slice(-60) : r.t)}</span> ` : ''; return `<div class="mrow">${ok?`<img src="${esc(r.u)}" alt="" referrerpolicy="no-referrer">`:''}<div class="tx"><b>${pre}${esc(r.text)}</b><span>${esc(nameOf(r.pid))}</span></div><div class="tally"><i style="background:var(--mint)">${r.c[2]}</i><i style="background:var(--sky)">${r.c[1]}</i><i style="background:var(--danger)">${r.c[0]}</i></div></div>`; }
+const MemeBoard = {
+  mount(v){
+    const g=v.g, K=CAPT[g.type];
+    const node=el(`<section class="stack" style="gap:16px;--gc:${GAMES[g.type].color}">${memeHead(g)}<h2>Итоги раунда ${g.round}</h2>
+      <div class="row small" style="justify-content:flex-end;gap:6px;font-weight:700"><span class="tally"><i style="background:var(--mint)">хорошо</i><i style="background:var(--sky)">норм.</i><i style="background:var(--danger)">плохо</i></span></div>
+      <div class="card" style="padding:6px 16px;margin-top:-8px">${g.roundMemes.map(memeRow).join('') || `<p class="muted" style="padding:10px 0">${K.noneRound}</p>`}</div>
+      <div class="stack" style="gap:6px"><div class="row"><h3 class="grow">Счёт</h3><span class="small muted">оценок «хорошо»</span></div>${memeScore(v.players.filter(p=>p.score||p.mid||p.on))}</div>
+      <div class="sticky-cta">${v.isHost && !v.public ? `<button class="btn primary big" data-act="meme-next">${g.round>=g.rounds?'К итогам':'Следующий раунд'}</button>`:`<div class="waitnote">${g.round>=g.rounds?'Итоги через пару секунд':'Следующий раунд через пару секунд'}</div>`}</div></section>`);
+    node.addEventListener('click', e=>{ const b=e.target.closest('[data-act]'); if(b) act(b.dataset.act); });
+    return {el:node};
+  }
+};
+const MemeFinal = {
+  mount(v){
+    const g=v.g, ps=v.players.filter(p=>p.score||p.mid||p.on).sort((a,b)=>b.score-a.score || (b.mid||0)-(a.mid||0));
+    const top=ps[0], tie=ps.length>1 && ps[1].score===top.score && (ps[1].mid||0)===(top.mid||0);
+    const K=CAPT[g.type];
+    const node=el(`<section class="stack" style="gap:18px;--gc:${GAMES[g.type].color}">${gameHead(g.type,'<span class="tag">Итоги</span>')}
+      <div class="big-wait" style="padding-block:6px">${top?av(top.pid,'lg'):''}<div class="verdict">${top && top.score>0 ? (tie?'Ничья на первом месте!':esc(top.name)+' побеждает!') : 'Никто не получил «хорошо»'}</div>${top && top.score>0?`<p class="muted">${goodWord(top.score)}</p>`:''}</div>
+      ${g.best && g.best.c[2]>0 ? `<div class="stack" style="gap:8px"><h3>${K.best} · ${esc(nameOf(g.best.pid))}</h3>${memeCard(g.best, g.best.text)}</div>`:''}
+      <div class="stack" style="gap:6px"><div class="row"><h3 class="grow">Таблица</h3><span class="small muted">оценок «хорошо»</span></div>${memeScore(ps)}</div>
+      <div class="sticky-cta">${v.public ? `<div class="waitnote">Новая игра начнётся через ${timerHtml(g.deadline)} с</div>` : v.isHost?`<div class="row"><button class="btn ghost grow" data-act="lobby">В лобби</button><button class="btn primary grow" data-act="again">Ещё игра</button></div>`:`<div class="waitnote">Ждём ведущего</div>`}</div></section>`);
+    node.addEventListener('click', e=>{ const b=e.target.closest('[data-act]'); if(b) act(b.dataset.act); });
+    return {el:node};
   }
 };
 
