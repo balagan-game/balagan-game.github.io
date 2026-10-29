@@ -278,6 +278,9 @@ details.card[open] summary{margin-bottom:12px}
 .fcard .cap{font-weight:800;color:#D9481B}
 .fcard .cap.ph{color:#A8A4BC;font-weight:500}
 .mrow .tx .pre{color:var(--muted);font-weight:500}
+.numset{display:flex;align-items:center;gap:8px}
+.numset .numin{width:84px;min-height:44px;text-align:center;font-family:var(--f-display);font-weight:700;font-size:20px;padding:6px 8px;-moz-appearance:textfield}
+.numset .numin::-webkit-outer-spin-button,.numset .numin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 /* ---------- toast ---------- */
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%) translateY(20px);background:var(--paper);color:var(--ink);padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:calc(100% - 32px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -348,9 +351,9 @@ const GAMES = {
     rules:['Каждый придумывает фразу.','Фраза уходит соседу — он её рисует.','Рисунок уходит следующему — он пишет, что видит. И так по кругу.','В конце смотрим все цепочки и смеёмся.']},
   croc:{name:'Крокодил', short:'Покажи слово рисунком, жестами или словами — остальные угадывают.', color:'var(--mint)', min:2, players:'от 2 игроков',
     rules:['Игроки ходят по очереди: показывающий выбирает одно из трёх слов.','Рисуем: остальные видят рисунок у себя и пишут догадки, игра проверяет сама.','Жестами или словами: угадывают вслух (рядом или по видеосвязи), показывающий отмечает, кто угадал.','Угадавший получает 2 очка, показывающий — 1.']},
-  meme:{name:'Создай мем', short:'Каждому — своя мемная картинка. Придумай подпись смешнее всех.', color:'var(--sky)', min:3, players:'от 3 игроков',
+  meme:{name:'Создай мем', short:'Каждому — своя мемная картинка. Придумай подпись смешнее всех.', color:'var(--sky)', min:2, players:'от 2 игроков',
     rules:['Каждый раунд всем выдаются разные свежие мемные картинки без текста.','Придумай к своей картинке подпись. Картинку можно один раз поменять.','Потом мемы показываются по одному, без имени автора. Остальные ставят оценку: плохо, нормально или хорошо.','Через 6 раундов побеждает тот, у кого больше всего оценок «хорошо».']},
-  finish:{name:'Закончи предложение', short:'Каждому своё начало истории. Допиши его так, чтобы все легли.', color:'var(--orange)', min:3, players:'от 3 игроков',
+  finish:{name:'Закончи предложение', short:'Каждому своё начало истории. Допиши его так, чтобы все легли.', color:'var(--orange)', min:2, players:'от 2 игроков',
     rules:['Каждый раунд всем выдаются разные незаконченные предложения — с именами игроков из комнаты.','Допиши своё как можно смешнее. Текст можно один раз поменять.','Потом варианты показываются по одному, без имени автора. Остальные ставят оценку: плохо, нормально или хорошо.','В конце побеждает тот, у кого больше всего оценок «хорошо».']},
   spy:{name:'Шпион', short:'Все знают, где вы находитесь. Кроме шпиона.', color:'var(--yellow)', min:3, players:'от 3 игроков',
     rules:['Всем, кроме шпиона, показывается одна и та же карточка: локация или герой Dota 2 — смотря какой набор выбран.','По очереди задавайте друг другу вопросы о карточке — не слишком прямые, чтобы шпион не догадался.','Шпион старается понять, что на карточке, и не выдать себя. Он может в любой момент попробовать её назвать.','Если заподозрили кого-то — начинайте голосование. Поймали шпиона — победа мирных.']}
@@ -369,6 +372,7 @@ const SETTINGS = {
   ],
   meme:[
     {key:'rounds', label:'Раундов', opts:[[3,'3'],[6,'6'],[10,'10']]},
+    {key:'rerolls', label:'Сколько раз можно поменять картинку за раунд', type:'num', min:0, max:10, note:'Впишите число от 0 до 10. 0 — менять нельзя.'},
     {key:'time', label:'Время на подпись', opts:[[45,'45 с'],[75,'75 с'],[120,'2 мин']]}
   ],
   finish:[
@@ -466,7 +470,141 @@ const FINISH = [
 '{A} открывает свой ресторан. Фирменное блюдо в меню называется…',
 '{A} заходит в чат подъезда и пишет: «Соседи, кто взял мой…',
 'Экскурсовод в Эрмитаже останавливается и говорит: «Эту картину подарил музею человек по имени {A}, и изображено на ней…',
-'{A} пытается пройти таможню, сотрудник открывает чемодан, а там…'
+'{A} пытается пройти таможню, сотрудник открывает чемодан, а там…',
+'{A} открывает дверь курьеру, а тот вместо посылки протягивает…',
+'{A} включает навигатор, и голос в нём внезапно говорит:…',
+'{A} и {B} решили сходить в поход. Уже через час они…',
+'{A} находит на улице кошелёк, а внутри лежит записка:…',
+'{A} отвечает на звонок с незнакомого номера, и голос в трубке шепчет:…',
+'{A} впервые встаёт на сноуборд и через пять секунд…',
+'{A} приходит в парикмахерскую и просит сделать причёску как у…',
+'На уроке химии {A} смешивает две жидкости, и…',
+'{A} садится в маршрутку и громко объявляет:…',
+'{A} записывает видеопоздравление для бабушки, но случайно…',
+'{A} пробует новый фильтр в TikTok, и теперь…',
+'{A} и {B} решили сделать ремонт своими руками. Через неделю квартира…',
+'{A} просыпается в чужой квартире, а на кухне кто-то жарит…',
+'{A} выходит на балкон подышать воздухом и видит, что на соседнем балконе…',
+'{A} становится вегетарианцем, но уже на следующий день…',
+'{A} заказывает в ресторане «блюдо дня» и получает…',
+'{A} отправляет резюме в «Макдоналдс», а в графе «О себе» пишет:…',
+'Во время грозы {A} выходит на улицу с антенной от телевизора, чтобы…',
+'{A} покупает квартиру мечты, но в первую же ночь выясняется, что…',
+'{A} учит китайский за неделю. На седьмой день…',
+'{A} идёт на рыбалку с удочкой, а возвращается с…',
+'{A} репетирует перед зеркалом, чтобы наконец сказать начальнику:…',
+'{A} и {B} участвуют в шоу «Голос». Жюри разворачивается, потому что…',
+'{A} прыгает с парашютом, но на высоте трёх километров вспоминает, что…',
+'{A} уговаривает охранника пустить в клуб и говорит:…',
+'{A} попадает на шоу «Кто хочет стать миллионером», и последний вопрос звучит так:…',
+'{A} гуляет по зоопарку, и вдруг жираф…',
+'Экстрасенс уверенно заявляет, что в прошлой жизни {A} — это…',
+'{A} изобретает машину, которая умеет…',
+'{A} становится мэром города и первым делом ставит на главной площади памятник…',
+'{A} заходит в магазин за хлебом, а выходит с…',
+'{A} чихает на важном совещании, и в этот момент…',
+'{A} читает инструкцию к новой микроволновке, а там написано:…',
+'{A} и {B} везут шкаф на дачу. По дороге шкаф…',
+'{A} заводит собаку, но собака оказывается…',
+'{A} находит в бабушкином сундуке старый дневник, а на первой странице написано:…',
+'{A} приходит домой, а робот-пылесос…',
+'{A} отправляется в кругосветное путешествие с одним рюкзаком, в котором лежит…',
+'{A} снимается в рекламе шампуня, но прямо на съёмках…',
+'{A} заходит в туалет торгового центра и обнаруживает там…',
+'Посреди ночи {A} получает сообщение от одноклассника, которого не видели десять лет:…',
+'{A} сдаёт на права. Уже через минуту инструктор говорит:…',
+'{A} открывает шампанское на Новый год, и пробка…',
+'{A} выходит на пробежку в шесть утра и встречает…',
+'{A} и {B} сидят в кино, и вдруг на экране показывают…',
+'{A} приходит к стоматологу, садится в кресло, а врач говорит:…',
+'{A} получает посылку из Китая, а внутри что-то шевелится и…',
+'{A} отмечает день рождения в аквапарке, и в разгар праздника…',
+'{A} отвечает у доски и вместо теоремы Пифагора рассказывает…',
+'{A} забывает выключить микрофон на онлайн-уроке, и весь класс слышит…',
+'{A} идёт на свидание вслепую, а за столиком уже сидит…',
+'{A} пытается попасть в ритм на дискотеке, но…',
+'{A} прячет заначку в самом надёжном месте —…',
+'{A} и {B} лепят снеговика, но он получается подозрительно похожим на…',
+'{A} пишет письмо себе в будущее:…',
+'{A} придумывает новый праздник. Он называется…',
+'{A} возвращается из отпуска с огромным чемоданом, а внутри…',
+'{A} моет машину, и вдруг из-под капота…',
+'{A} проваливается в открытый люк и оказывается в…',
+'{A} играет в «Мафию» и, когда приходит очередь говорить, заявляет:…',
+'{A} покупает билет на концерт любимой группы, но на сцену выходит…',
+'{A} записывает подкаст. Тема первого выпуска:…',
+'{A} решает подстричься без парикмахера, и через пять минут…',
+'{A} сдаёт кровь, медсестра смотрит на пробирку и говорит:…',
+'{A} на спор съедает самый острый перец в мире и…',
+'{A} приходит на родительское собрание вместо родителей и…',
+'{A} включает телевизор, а там в новостях показывают…',
+'{A} гладит рубашку перед важной встречей, но…',
+'{A} и {B} открывают кафе у трассы. Главное блюдо в меню —…',
+'{A} засыпает на лекции и во сне громко говорит:…',
+'{A} попадает в фильм ужасов и, вместо того чтобы убегать,…',
+'{A} находит дома потайную дверь, а за ней…',
+'{A} участвует в конкурсе красоты и в номинации «талант» показывает…',
+'{A} становится супергероем. Суперсила —…',
+'{A} высаживается на Марсе и первым делом…',
+'{A} идёт в баню, а там…',
+'{A} знакомится с родителями второй половинки и за ужином случайно…',
+'{A} получает первую зарплату и в тот же вечер…',
+'{A} забывает все пароли и на вопрос «Девичья фамилия матери» отвечает:…',
+'{A} несёт торт на праздник, но на лестнице…',
+'{A} подписывает договор не читая, а в последнем пункте мелким шрифтом написано:…',
+'{A} кормит уток в парке, и вдруг одна утка…',
+'{A} уговаривает кота слезть со шкафа и обещает ему…',
+'{A} и {B} перепутали чемоданы в аэропорту. Открыв чужой чемодан, они находят…',
+'{A} читает гороскоп на сегодня: «Звёзды советуют…',
+'{A} выходит на сцену стендапа, и первая шутка звучит так:…',
+'{A} устраивается работать Дедом Морозом, но на первом же утреннике…',
+'{A} пишет сочинение на ЕГЭ и утверждает, что главная мысль «Войны и мира» —…',
+'{A} открывает секретный ящик в столе начальника и находит…',
+'{A} выигрывает путёвку на тропический остров, но вместо пляжа…',
+'{A} надевает VR-очки и случайно…',
+'{A} и {B} ночью залезают на крышу, чтобы…',
+'{A} приносит на работу домашнюю еду, и весь офис…',
+'{A} создаёт нейросеть, и первое, что она пишет, —…',
+'{A} пробует сделать сальто на батуте, но…',
+'{A} спрашивает у голосового помощника, как стать счастливым, и тот отвечает:…',
+'{A} неделю не выходит из дома, а когда наконец выходит, оказывается, что…',
+'{A} фотографирует закат, а на фото случайно попадает…',
+'{A} придумывает новый вкус мороженого:…',
+'{A} записывается на курсы пикапа, и первое задание —…',
+'{A} и {B} строят дом на дереве, а соседи вызывают…',
+'{A} помогает бабушке перейти дорогу, но бабушка…',
+'{A} проходит мимо памятника, и памятник вдруг…',
+'{A} забирает из химчистки пиджак, а в кармане лежит…',
+'{A} находит в лесу избушку, стучит, и дверь открывает…',
+'{A} включает песню в караоке, но вместо слов на экране…',
+'{A} открывает письмо с темой «Срочно!», а внутри…',
+'{A} занимает очередь в поликлинику в шесть утра, и уже через час…',
+'{A} и {B} летят в космос на ракете из ИКЕА. Инструкция начинается со слов:…',
+'{A} попадает в собственный сон и встречает там…',
+'{A} приходит на встречу выпускников и узнаёт, что весь класс…',
+'{A} надувает шарики к празднику, но последний шарик…',
+'{A} открывает дверь своей квартиры, а там уже живёт…',
+'{A} выходит из душа и обнаруживает в ванной…',
+'{A} поднимается на Эверест и на вершине находит…',
+'{A} подаёт заявку на кулинарное шоу, фирменное блюдо —…',
+'{A} узнаёт, что в квартире живёт домовой, и тот требует…',
+'{A} покупает дорогой тренажёр, и теперь он используется как…',
+'{A} становится учителем физкультуры, и первое задание для класса —…',
+'{A} читает детям сказку, но вместо «Колобка» получается история о том, как…',
+'{A} бросает всё и уезжает жить в деревню, но уже через день…',
+'{A} спрашивает у мамы рецепт борща, а мама отвечает:…',
+'{A} и {B} ведут прогноз погоды на федеральном канале и обещают на завтра…',
+'{A} включает в соцсетях режим «невидимка», но все всё равно видят, что…',
+'{A} нажимает в магазине кнопку «вызов консультанта», и через секунду…',
+'{A} задувает свечи на торте и загадывает желание:…',
+'{A} разглядывает свою детскую фотографию и с ужасом замечает на заднем плане…',
+'{A} побеждает в соревновании по поеданию пельменей, а в качестве приза получает…',
+'{A} забывает зонт, начинается ливень, и единственное укрытие поблизости —…',
+'{A} становится фитнес-тренером. Главное упражнение называется…',
+'{A} приходит на концерт классической музыки и посреди полной тишины…',
+'{A} становится добровольцем в эксперименте учёных, и теперь…',
+'{A} и {B} заблудились в аэропорту Стамбула и через неделю…',
+'{A} пытается вернуть в магазин носки, которые носили полгода, и объясняет продавцу:…'
 ];
 const FINISH_NAMES = ['Костя','бабушка Зина','сосед Валера','тётя Люба','дядя Гена','кот Барсик','Стас из пятого подъезда','Лена из бухгалтерии','Олег','физрук Петрович','Марина','участковый Сергеич'];
 const CAPT = {
@@ -478,7 +616,7 @@ const MEME_API = 'https://api.imgflip.com/get_memes';
 const PUBLIC_CODE = 'OPEN';   /* letter O is never used in private codes */
 const DEFAULT_SETTINGS = () => ({ maxPlayers:10, game:'telephone',
   telephone:{len:0, textTime:45, drawTime:90}, croc:{mode:'draw', time:80, rounds:1, level:'mix'},
-  meme:{rounds:6, time:75}, finish:{rounds:6, time:75, names:'players'}, spy:{pack:'places', time:480, spies:1} });
+  meme:{rounds:6, time:75, rerolls:1}, finish:{rounds:6, time:75, names:'players'}, spy:{pack:'places', time:480, spies:1} });
 const AV_COLORS = ['#FF4F9A','#FFD23F','#3DDBB0','#7AA7FF','#FF8A3D','#B98CFF','#4FE3F0','#F25C54','#9BE15D','#FFB3D9'];
 const INK_COLORS = ['#1B1A2E','#8A8799','#F2433A','#FF9A1F','#FFD60A','#2DBE6C','#2F7CF6','#8B5CF6','#8B5A2B','#FF6FB5'];
 const SHEET = '#FFFDF8';
@@ -909,7 +1047,11 @@ const Host = {
     if(S.phase==='lobby'){
       if(!isHost) return;
       if(m.a==='game' && GAMES[m.game]) S.settings.game=m.game;
-      else if(m.a==='set'){ const d=(SETTINGS[m.game]||[]).find(x=>x.key===m.key); if(d && d.opts.some(o=>o[0]===m.val)) S.settings[m.game][m.key]=m.val; else return; }
+      else if(m.a==='set'){
+        const d=(SETTINGS[m.game]||[]).find(x=>x.key===m.key); if(!d) return;
+        if(d.type==='num'){ const n=Math.round(+m.val); if(!isFinite(n)) return; S.settings[m.game][m.key]=clamp(n, d.min, d.max); }
+        else if(d.opts.some(o=>o[0]===m.val)) S.settings[m.game][m.key]=m.val; else return;
+      }
       else if(m.a==='seats') S.settings.maxPlayers = clamp(m.val|0, Math.max(2, S.players.length), MAX_SEATS);
       else if(m.a==='kick'){ this.removePlayer(m.pid, true); return; }
       else if(m.a==='start') this.startGame();
@@ -1166,6 +1308,7 @@ const Meme = {
   },
   pickPic(H,g){ let pool=H.memePool.filter(m=>!g.used.includes(m.u)); if(!pool.length){ g.used=[]; pool=H.memePool.slice(); } const m=pick(pool); g.used.push(m.u); return m; },
   live(H){ return H.S.players.filter(p=>p.connected && !p.left).map(p=>p.pid); },
+  rerollLimit(H){ const n=H.S.settings[H.S.g.type]?.rerolls; return n==null ? 1 : n; },
   beginRound(H){
     const g=H.S.g;
     g.round++; g.order=this.live(H); g.pics={}; g.caps={}; g.done={}; g.rerolled={}; g.queue=[]; g.qi=0; g.votes={};
@@ -1202,7 +1345,7 @@ const Meme = {
         g.done[pid]=true; if(t) g.caps[pid]=t;
         this.checkWrite(H); break;
       }
-      case 'meme-reroll': if(g.stage!=='write' || !g.order.includes(pid) || g.rerolled[pid] || g.done[pid]) return; g.rerolled[pid]=true; g.pics[pid]=this.pickPic(H,g,pid); break;
+      case 'meme-reroll': if(g.stage!=='write' || !g.order.includes(pid) || g.done[pid] || (g.rerolled[pid]||0)>=this.rerollLimit(H)) return; g.rerolled[pid]=(g.rerolled[pid]||0)+1; g.pics[pid]=this.pickPic(H,g,pid); break;
       case 'meme-vote': {
         if(g.stage!=='vote') return; const v=m.v|0; if(v<0 || v>2 || !this.voters(H).includes(pid)) return;
         g.votes[pid]=v; this.checkVotes(H); break;
@@ -1238,7 +1381,7 @@ const Meme = {
     const v = {type:g.type, id:g.id, stage:g.stage, round:g.round, rounds:g.rounds, deadline:g.deadline, inRound:inR};
     if(g.stage==='write'){
       v.total=g.order.length; v.pending=g.order.filter(p=>!g.done[p]); v.doneCount=v.total-v.pending.length;
-      if(inR){ v.pic=g.pics[pid]; v.done=!!g.done[pid]; v.myText=g.caps[pid]||''; v.rerolled=!!g.rerolled[pid]; }
+      if(inR){ v.pic=g.pics[pid]; v.done=!!g.done[pid]; v.myText=g.caps[pid]||''; v.rerollLimit=this.rerollLimit(H); v.rerollsLeft=Math.max(0, v.rerollLimit-(g.rerolled[pid]||0)); }
     }
     if(g.stage==='vote' || g.stage==='reveal'){
       const a=g.queue[g.qi];
@@ -1614,10 +1757,17 @@ const Lobby = {
       else if(!V.isHost) return;
       else if(a==='game') act('game', {game:b.dataset.game});
       else if(a==='set') act('set', {game:b.dataset.game, key:b.dataset.key, val: JSON.parse(b.dataset.val)});
+      else if(a==='numstep'){ const cur=+V.settings[b.dataset.game][b.dataset.key]||0; act('set', {game:b.dataset.game, key:b.dataset.key, val: cur + (+b.dataset.d)}); }
       else if(a==='seats') act('seats', {val: V.settings.maxPlayers + (+b.dataset.d)});
       else if(a==='kick') armed(b, 'Удалить', ()=>act('kick',{pid:b.dataset.pid}));
       else if(a==='start') act('start');
     });
+    const sendNum = inp => { if(!App.view?.isHost) return; const d=(SETTINGS[inp.dataset.game]||[]).find(x=>x.key===inp.dataset.key); if(!d) return;
+      let n=Math.round(+inp.value); if(!isFinite(n) || inp.value==='') n=App.view.settings[inp.dataset.game][inp.dataset.key];
+      n=clamp(n,d.min,d.max); inp.value=n; act('set',{game:inp.dataset.game, key:inp.dataset.key, val:n}); };
+    node.addEventListener('change', e=>{ if(e.target.classList.contains('numin')) sendNum(e.target); });
+    node.addEventListener('keydown', e=>{ if(e.target.classList.contains('numin') && e.key==='Enter'){ e.preventDefault(); e.target.blur(); } });
+    node.addEventListener('focusout', e=>{ if(e.target.classList && e.target.classList.contains('numin')) setTimeout(()=>App.view && inst.update(App.view), 0); });
     const inst={el:node, update(v){
       const S=v.settings, G=GAMES[S.game], n=v.players.length, on=v.players.filter(p=>p.on).length;
       $('#seats',node).innerHTML = v.isHost
@@ -1631,9 +1781,13 @@ const Lobby = {
       const gp=$('#gpick',node); gp.classList.toggle('locked', !v.isHost);
       gp.innerHTML = Object.entries(GAMES).map(([k,g])=>`<button class="gcard" style="--gc:${g.color}" data-act="game" data-game="${k}" aria-pressed="${S.game===k}"><h3>${g.name}</h3><p class="muted">${g.short}</p><span class="meta">${g.players}</span></button>`).join('');
       const rulesOpen = !!$('#gset details',node)?.open;
-      $('#gset',node).innerHTML = `<h3>Настройки</h3>` + SETTINGS[S.game].map(d=>`<div class="opt"><span class="small muted" style="font-weight:600">${d.label}</span>
-          <div class="seg ${v.isHost?'':'ro'}">${d.opts.map(([val,lab])=>`<button data-act="set" data-game="${S.game}" data-key="${d.key}" data-val='${JSON.stringify(val)}' aria-pressed="${S[S.game][d.key]===val}">${lab}</button>`).join('')}</div>
-          ${d.note?`<span class="small muted">${d.note}</span>`:''}</div>`).join('')
+      const ae=document.activeElement, typing = ae && ae.classList && ae.classList.contains('numin') && $('#gset',node).contains(ae);
+      if(!typing) $('#gset',node).innerHTML = `<h3>Настройки</h3>` + SETTINGS[S.game].map(d=>`<div class="opt"><span class="small muted" style="font-weight:600">${d.label}</span>
+          ${d.type==='num' ? (v.isHost
+            ? `<div class="numset"><button class="step-btn" data-act="numstep" data-game="${S.game}" data-key="${d.key}" data-d="-1" aria-label="Меньше" ${S[S.game][d.key]<=d.min?'disabled':''}>−</button><input class="input numin" type="number" inputmode="numeric" id="num-${S.game}-${d.key}" min="${d.min}" max="${d.max}" step="1" value="${S[S.game][d.key]}" data-game="${S.game}" data-key="${d.key}" aria-label="${d.label}"><button class="step-btn" data-act="numstep" data-game="${S.game}" data-key="${d.key}" data-d="1" aria-label="Больше" ${S[S.game][d.key]>=d.max?'disabled':''}>+</button></div>`
+            : `<div><span class="tag" style="font-size:15px">${S[S.game][d.key]}</span></div>`)
+          : `<div class="seg ${v.isHost?'':'ro'}">${d.opts.map(([val,lab])=>`<button data-act="set" data-game="${S.game}" data-key="${d.key}" data-val='${JSON.stringify(val)}' aria-pressed="${S[S.game][d.key]===val}">${lab}</button>`).join('')}</div>`}
+          ${d.note && (v.isHost || d.type!=='num') ?`<span class="small muted">${d.note}</span>`:''}</div>`).join('')
         + `<details ${rulesOpen?'open':''}><summary class="link" style="list-style:none;display:inline-block">Правила</summary><ol class="rules" style="margin-top:8px">${G.rules.map(r=>`<li>${r}</li>`).join('')}</ol></details>`;
       const cta=$('#cta',node);
       if(v.isHost){
@@ -1694,7 +1848,7 @@ const MemeWrite = {
     const node=el(`<section class="stack" style="gap:14px;--gc:${GAMES[g.type].color}">${memeHead(g)}
       <div id="card"></div>
       <textarea class="input" id="cap" rows="2" maxlength="140" placeholder="${K.ph}"></textarea>
-      <div class="row"><button class="btn ghost" data-act="reroll" ${g.rerolled?'disabled':''}>${K.reroll}</button><span class="spacer"></span><button class="btn primary" data-act="go">Готово</button></div>
+      <div class="row"><button class="btn ghost" data-act="reroll" ${g.rerollLimit?'':'hidden'}></button><span class="spacer"></span><button class="btn primary" data-act="go">Готово</button></div>
       <p class="small muted">${K.hint}</p></section>`);
     const ta=$('#cap',node); let sent=false, sentAt=0, picU=null;
     const paint=()=>{ const V=App.view.g, key=V.pic && (V.pic.u||V.pic.t); if(V.pic && key!==picU){ picU=key; $('#card',node).innerHTML=memeCard(V.pic, cleanText(ta.value,140), K.empty); } else { const fc=$('#card .cap',node); const t=cleanText(ta.value,140); if(fc){ fc.textContent=t||K.empty; fc.classList.toggle('ph',!t); } } };
@@ -1703,7 +1857,8 @@ const MemeWrite = {
     ta.addEventListener('input', paint);
     ta.addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); submit(false); } });
     node.addEventListener('click', e=>{ const b=e.target.closest('[data-act]'); if(!b) return; if(b.dataset.act==='go') submit(false); if(b.dataset.act==='reroll'){ act('meme-reroll'); b.disabled=true; } });
-    const inst={el:node, update(v){ paint(); const rb=$('[data-act=reroll]',node); if(v.g.rerolled) rb.disabled=true; if(sent && !v.g.done && Date.now()-sentAt>5000){ sent=false; submit(true); } },
+    const rerollBtn=()=>{ const V=App.view.g, rb=$('[data-act=reroll]',node); rb.hidden=!V.rerollLimit; rb.disabled=V.rerollsLeft<=0; rb.textContent = K.reroll + (V.rerollLimit>1 ? ` · осталось ${V.rerollsLeft}` : ''); };
+    const inst={el:node, update(v){ paint(); rerollBtn(); if(sent && !v.g.done && Date.now()-sentAt>5000){ sent=false; submit(true); } },
       onTick(now){ const d=App.view?.g?.deadline; if(!sent && d && App.view.g.stage==='write' && now>=d-400) submit(true); }};
     inst.update(v); return inst;
   }
