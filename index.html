@@ -827,9 +827,9 @@ function armed(btn, label, fn){
 }
 function roomLink(code){ return location.href.split('#')[0] + '#' + code; }
 const IS_FILE = location.protocol==='file:';
-async function copyText(text){
-  try{ await navigator.clipboard.writeText(text); toast('Ссылка скопирована'); }
-  catch(e){ const i=el(`<input class="input" readonly>`); i.value=text; document.body.appendChild(i); i.select(); try{ document.execCommand('copy'); toast('Ссылка скопирована'); }catch(_){ toast(text); } i.remove(); }
+async function copyText(text, done='Ссылка скопирована'){
+  try{ await navigator.clipboard.writeText(text); toast(done); }
+  catch(e){ const i=el(`<input class="input" readonly>`); i.value=text; document.body.appendChild(i); i.select(); try{ document.execCommand('copy'); toast(done); }catch(_){ toast(text); } i.remove(); }
 }
 let wakeLock=null;
 async function keepAwake(){ try{ if('wakeLock' in navigator && !wakeLock){ wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release',()=>{ wakeLock=null; }); } }catch(e){} }
@@ -1906,7 +1906,7 @@ const Lobby = {
         <div class="stack" style="gap:6px;min-width:0">
           <div class="eyebrow">Код комнаты</div>
           <div class="big">${esc(v.code)}</div>
-          <div class="row" style="gap:6px"><button class="btn" data-act="copy">Скопировать ссылку</button><button class="btn ghost" data-act="share" ${navigator.share?'':'hidden'}>Отправить</button></div>
+          <div class="row" style="gap:6px"><button class="btn" data-act="copy">Скопировать ссылку</button><button class="btn" data-act="copycode">Скопировать код</button><button class="btn ghost" data-act="share" ${navigator.share?'':'hidden'}>Отправить</button></div>
         </div>
       </div>
       ${IS_FILE ? `<div class="card small" style="border-color:rgba(255,210,63,.35);background:rgba(255,210,63,.08)"><b>Игра открыта как файл с компьютера.</b> Ссылка у друзей не откроется. Пусть они откроют свою копию файла или сайт с игрой и введут код <b>${esc(v.code)}</b> — или выложите файл в интернет, тогда заработает и ссылка.</div>` : ''}
@@ -1924,6 +1924,7 @@ const Lobby = {
       const b=e.target.closest('[data-act]'); if(!b) return;
       const a=b.dataset.act, V=App.view;
       if(a==='copy') copyText(roomLink(V.code));
+      else if(a==='copycode') copyText(V.code, 'Код '+V.code+' скопирован');
       else if(a==='share') navigator.share({title:'Балаган', text:'Заходи играть! Комната '+V.code, url:roomLink(V.code)}).catch(()=>{});
       else if(!V.isHost) return;
       else if(a==='game') act('game', {game:b.dataset.game});
